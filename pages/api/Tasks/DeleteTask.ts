@@ -12,7 +12,7 @@ export default async function handler(
         if (!session) {
             res.status(401).json({message: "Unauthorized "})
         }
-        const {id: string} = req.query
+        const {id} = req.query
 
         //Delete Task
         try {

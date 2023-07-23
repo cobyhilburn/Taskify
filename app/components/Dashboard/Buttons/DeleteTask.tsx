@@ -1,10 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
 import axios from "axios";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 
+interface IProps {
+    id: string
+}
 
-export default function DeleteTask({id}) {
+export default function DeleteTask({id}: IProps) {
     const queryClient = useQueryClient()
 
     const {mutate} = useMutation(

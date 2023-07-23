@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Lightning from "./lightning.svg"
 export default function About() {
     return(
         <section className="bg-secondarycolor">

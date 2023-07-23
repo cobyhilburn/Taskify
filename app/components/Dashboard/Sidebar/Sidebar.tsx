@@ -2,7 +2,11 @@ import Image from "next/image"
 import Logout from "@/app/components/Dashboard/Sidebar/Logout";
 import HomeButton from "@/app/components/Dashboard/Sidebar/HomeButton";
 
-export default function Sidebar({name, image}) {
+interface IProps {
+    name: string;
+    image: string;
+  }
+export default function Sidebar({name, image} : IProps) {
   return (
    <div className="flex flex-col w-full p-5 bg-primarycolor h-full border-2 border-secondarycolor rounded-l-[50px]">
       <div className="flex flex-row items-center pb-[5px] border-b-2 border-accentcolor">

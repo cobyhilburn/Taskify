@@ -2,16 +2,12 @@
 
 import axios from "axios";
 import {useQuery} from "@tanstack/react-query";
-import Task from "@/app/components/Dashboard/Task";
-import {useState} from "react";
 import AddTask from "@/app/components/Dashboard/Buttons/AddTask";
 import DeleteTask from "@/app/components/Dashboard/Buttons/DeleteTask";
 import EditTask from "@/app/components/Dashboard/Buttons/EditTask";
 import {Oval} from "react-loader-spinner";
 
-interface tasks {
 
-}
 const fetchTasks = async () => {
     const response = await axios.get("/api/Tasks/GetTasks");
     return response.data;
@@ -57,7 +53,7 @@ export default function TaskList() {
                <AddTask />
            </div>
            </div>
-           {data?.map((task) => {
+           {data?.map((task: { completed: boolean  ; id: string ; title: string; }) => {
                const completionStatus = task.completed ? "Complete" : "Incomplete"
                return (
                    <div

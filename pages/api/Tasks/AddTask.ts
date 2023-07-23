@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth].js";
 import prisma from "../../../prisma/client";
@@ -12,8 +12,9 @@ export default async function handler(
     if (!session)
       return res.status(401).json({ message: "Sign in to make post" });
 
-    const title = req.body.formdata[0];
-    const completed = req.body.formdata[1];
+      const { title, completed } = req.body;
+      console.log(title, completed)
+
 
     //Get user
     const prismaUser = await prisma.user.findUnique({

@@ -1,17 +1,48 @@
 "use client";
+import {Dispatch} from "react";
 import { useState } from "react";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import axios from "axios";
 
+const OPTIONS: Options[] = [
+        "incomplete",
+        "complete"
+]
+type Options = "incomplete" | "complete"
 
-export default function EditTaskToggle({ setToggle, id , title, iscompleted}) {
+interface EditTaskToggle {
+    setToggle: (open: boolean) => void;
+    id: Dispatch<React.SetStateAction<string>>;
+    title: Dispatch<React.SetStateAction<string>>;
+    iscompleted: Dispatch<React.SetStateAction<boolean>>;
+  }
+interface IProps {
+    setToggle: (open: boolean) => void;
+    id: string,
+    title: string,
+    iscompleted: boolean
+}
+
+interface IFormdata {
+    task: string;
+    completed: boolean;
+    id: string;
+  }
+  
+
+export default function EditTaskToggle({ setToggle, id , title, iscompleted}: IProps ) {
     const queryClient = useQueryClient()
-    const [completed, isCompleted] = useState<boolean>(iscompleted ?? false);
+    const [completed, isCompleted] = useState(iscompleted  );
     const [task, setTask] = useState(title);
 
+    
 
     const  mutation = useMutation(
-        async (formdata) => await axios.put("/api/Tasks/EditTask", formdata, {
+        async () => await axios.put("/api/Tasks/EditTask", {
+            title: task,
+            completed: completed,
+            id: id
+        }, {
             headers: {
                 "Content-Type": "application/json"
             }
@@ -20,7 +51,7 @@ export default function EditTaskToggle({ setToggle, id , title, iscompleted}) {
             onError: (error) => {
                 console.log(error);
             },
-            onSuccess: (data) => {
+            onSuccess: () => {
                 queryClient.invalidateQueries(["tasks"])
             },
         }
@@ -30,15 +61,24 @@ export default function EditTaskToggle({ setToggle, id , title, iscompleted}) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const formdata = {
-            formdata: [task, completed, id]};
-        mutation.mutate(formdata);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const formData: IFormdata = {
+            task: task, 
+            completed: completed, 
+            id: id
+        };
+        mutation.mutate();
         setToggle(false);
     };
 
-    const handleSelectChange = async (e) => {
-        const { value } = e.target;
-        isCompleted(value === "true")
+    const handleSelectChange = async (e: React.FormEvent) => {
+        const value = e.target as HTMLSelectElement
+        const selected = value.options[value.selectedIndex].text;
+        if (selected === "complete") {
+            isCompleted(true);
+        } else if (selected === "incomplete") {
+            isCompleted(false);
+        }
     };
 
 
@@ -61,7 +101,7 @@ export default function EditTaskToggle({ setToggle, id , title, iscompleted}) {
                     </h1>
                     <div className="flex flex-col items-start w-full">
                         <label
-                            for="task"
+                           
                             className="font-bold text-[20px] font-golos text-accentcolor"
                         >
                             TITLE
@@ -79,13 +119,15 @@ export default function EditTaskToggle({ setToggle, id , title, iscompleted}) {
                             STATUS
                         </label>
                         <select
-
+                            onChange={(e) => handleSelectChange((e))}
+                            defaultValue={completed ? "complete" : "incomplete"}
                             className="w-full border-2 rounded-md font-golos font-normal text-black text-[25px] py-[10px] px-[10px] h-[60px] border-primarycolor focus:border-primarycolor focus-visible:outline-0"
-                            value={completed}
-                            onChange={handleSelectChange}
                         >
-                            <option value={false}>Incomplete</option>
-                            <option value={true}>Complete</option>
+                            {OPTIONS.map((option) => (
+                                <option key={option} value={option}>
+                                    {option}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="flex mt-[70px] gap-[10px] items-center text-center">

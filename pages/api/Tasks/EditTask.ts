@@ -11,9 +11,8 @@ export default async function handler(
         const session = await getServerSession(req, res, authOptions)
         if(!session)
             return res.status(401).json({message: "Unauthorized "})
-        const title = req.body.formdata[0]
-        const completed = req.body.formdata[1]
-        const id = req.body.formdata[2]
+        
+        const {title, completed, id} = req.body
         console.log(req.body)
 
         //Edit Task

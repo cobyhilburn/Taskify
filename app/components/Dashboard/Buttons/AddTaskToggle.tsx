@@ -1,21 +1,31 @@
+/* eslint-disable react/react-in-jsx-scope */
 "use client";
 
 import { useState } from "react";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useMutation,  useQueryClient} from "@tanstack/react-query";
 import axios from "axios";
 
-export default function AddTaskToggle({ setToggle }) {
+
+interface AddTaskToggleProps {
+  setToggle: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+
+export default function AddTaskToggle({ setToggle}: AddTaskToggleProps) {
   const queryClient = useQueryClient()
   const [completed, isCompleted] = useState(false);
   const [task, setTask] = useState("");
 
   const { mutate } = useMutation(
-    async (formdata) => await axios.post("/api/Tasks/AddTask", { formdata }),
+    async () => await axios.post("/api/Tasks/AddTask", {
+      title: task,
+      completed: completed,
+    }),
     {
       onError: (error) => {
         console.log(error);
       },
-      onSuccess: (data) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(["tasks"])
       },
     }
@@ -23,13 +33,15 @@ export default function AddTaskToggle({ setToggle }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formdata = [task, completed];
-    mutate(formdata);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const formData = {
+      formdata: [task, completed]};
+    mutate();
     setToggle(false);
   };
 
-  const handleSelectChange = async (e) => {
-    const { value } = e.target;
+  const handleSelectChange = async (e: React.FormEvent) => {
+    const { value } = e.target as HTMLSelectElement;
     if (value === "true") {
       isCompleted(true);
     } else if (value === "false") {
@@ -54,7 +66,6 @@ export default function AddTaskToggle({ setToggle }) {
           </h1>
           <div className="flex flex-col items-start w-full">
             <label
-              for="task"
               className="text-[20px]  font-golos font-bold text-accentcolor"
             >
               TITLE

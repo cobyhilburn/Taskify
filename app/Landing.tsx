@@ -1,7 +1,4 @@
 import Navbar from "@/app/components/Landing/Nav/Navbar";
-import About from "@/app/components/Landing/About";
-import Metrics from "@/app/components/Landing/Metrics";
-import CallToAction from "@/app/components/Landing/CallToAction";
 import Image from "next/image";
 import LandingImage from "./Image.svg"
 export default function Landing()  {
